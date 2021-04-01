@@ -23,7 +23,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://team.local.4livedemo.com/';
+$config['base_url'] = 'http://ci.local.com/';
 
 /*
 |--------------------------------------------------------------------------
