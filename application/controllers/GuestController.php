@@ -35,7 +35,7 @@ class GuestController extends CI_Controller
         $this->form_validation->set_rules('passconf', 'Password Confirmation', 'required');
         $this->form_validation->set_rules('user_email', 'Email', 'required|is_unique[tbl_users.user_email]');
         if ($this->form_validation->run() == FALSE) {
-            utilities_helper::dieJsonError(validation_errors());
+            utilities_helper::dieJsonError(current(validation_errors()));
         } else {
             $post = $this->input->post();
             unset($post['passconf']);
@@ -43,7 +43,7 @@ class GuestController extends CI_Controller
             if (false == $userid) {
                 utilities_helper::dieJsonError('Registration failded, please contact admin');
             }
-            utilities_helper::dieJsonError('Registration Completed sucessfully.');
+            utilities_helper::dieJsonSuccess('Registration Completed sucessfully.');
         }
     }
 
