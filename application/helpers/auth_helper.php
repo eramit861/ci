@@ -34,19 +34,20 @@ class auth_helper
 
     public function clearFailedAttempt($ip, $email)
     {
-        $db = FatApp::getDb();
-        return $db->deleteRecords('tbl_failed_login_attempts', ['smt' => 'attempt_username = ? and attempt_ip = ?', 'vals' => [$email, $ip]]);
-    }
+        $this->db->delete('tbl_failed_login_attempts');
+        $this->db->where('attempt_username =' . $email);
+        $this->db->where('attempt_ip =' . $ip);
+     }
 
     public function isBruteForceAttempt($ip, $email)
     {
-        $db = FatApp::getDb();
-        $srch = new SearchBase('tbl_failed_login_attempts');
-        $srch->addCondition('attempt_ip', '=', $ip)->attachCondition('attempt_username', '=', $email);
-        $srch->addCondition('attempt_time', '>=', date('Y-m-d H:i:s', strtotime("-5 minutes")));
-        $srch->addFld('COUNT(*) AS total');
-        $rs = $srch->getResultSet();
-        $row = $db->fetch($rs);
+        $this->db->select('COUNT(*) AS total');
+        $this->db->from('tbl_failed_login_attempts');
+        $this->db->where('attempt_ip', $ip);
+        $this->db->or_where('attempt_username', $email);
+        $this->db->where('attempt_time', '>='.date('Y-m-d H:i:s', strtotime("-5 minutes")));
+        $query = $this->db->get();
+        $row = $query->result_array();  
         return ($row['total'] > 3);
     }
 
@@ -281,6 +282,8 @@ class auth_helper
     public static function checkLoginTokenInDB($token)
     {
         $db = FatApp::getDb();
+        tbl_user_auth_token
+        
         $srch = new SearchBase(static::DB_TBL_USER_AUTH);
         $srch->addCondition('uauth_token', '=', $token);
         $srch->doNotCalculateRecords();
